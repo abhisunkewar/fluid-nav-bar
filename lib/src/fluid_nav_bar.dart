@@ -67,9 +67,9 @@ class FluidNavBar extends StatefulWidget {
     this.scaleFactor = 1.2,
     this.defaultIndex = 0,
     FluidNavBarItemBuilder? itemBuilder,
-  }) : this.itemBuilder = itemBuilder ?? _identityBuilder,
-       assert(icons.length > 1),
-       super(key: key);
+  })  : this.itemBuilder = itemBuilder ?? _identityBuilder,
+        assert(icons.length > 1),
+        super(key: key);
 
   @override
   State createState() => _FluidNavBarState();
@@ -122,10 +122,18 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
       height: FluidNavBar.nominalHeight,
       child: Stack(
         children: [
-          Positioned(left: 0, top: 0, width: appSize.width, height: height, child: _buildBackground()),
+          Positioned(
+            left: 0,
+            top: 0,
+            width: appSize.width,
+            height: height,
+            child: _buildBackground(),
+            bottom: 16.0,
+          ),
           Positioned(
             left: (appSize.width - _getButtonContainerWidth()) / 2,
             top: 0,
+            bottom: 16.0,
             width: _getButtonContainerWidth(),
             height: height,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: _buildButtons()),
@@ -228,7 +236,10 @@ class _BackgroundCurvePainter extends CustomPainter {
   final double _normalizedY;
   final Color _color;
 
-  _BackgroundCurvePainter(double x, double normalizedY, Color color) : _x = x, _normalizedY = normalizedY, _color = color;
+  _BackgroundCurvePainter(double x, double normalizedY, Color color)
+      : _x = x,
+        _normalizedY = normalizedY,
+        _color = color;
 
   @override
   void paint(canvas, size) {
