@@ -27,7 +27,7 @@ typedef Widget FluidNavBarItemBuilder(FluidNavBarIcon icon, FluidNavBarItem item
 ///
 ///
 class FluidNavBar extends StatefulWidget {
-  static const double nominalHeight = 80.0;
+  static const double nominalHeight = 72.0;
 
   /// The list of icons to display
   final List<FluidNavBarIcon> icons;
@@ -128,14 +128,12 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
             width: appSize.width,
             height: height,
             child: _buildBackground(),
-            bottom: 16.0,
           ),
           Positioned(
             left: (appSize.width - _getButtonContainerWidth()) / 2,
             top: 0,
-            bottom: 16.0,
             width: _getButtonContainerWidth(),
-            height: height,
+            height: 56.0,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: _buildButtons()),
           ),
         ],
