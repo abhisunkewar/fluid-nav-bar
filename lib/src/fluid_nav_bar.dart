@@ -27,7 +27,7 @@ typedef Widget FluidNavBarItemBuilder(FluidNavBarIcon icon, FluidNavBarItem item
 ///
 ///
 class FluidNavBar extends StatefulWidget {
-  static const double nominalHeight = 56.0;
+  static const double nominalHeight = 80.0;
 
   /// The list of icons to display
   final List<FluidNavBarIcon> icons;
@@ -58,18 +58,18 @@ class FluidNavBar extends StatefulWidget {
 
   final FluidNavBarItemBuilder itemBuilder;
 
-  FluidNavBar(
-      {Key? key,
-      required this.icons,
-      this.onChange,
-      this.style,
-      this.animationFactor = 1.0,
-      this.scaleFactor = 1.2,
-      this.defaultIndex = 0,
-      FluidNavBarItemBuilder? itemBuilder})
-      : this.itemBuilder = itemBuilder ?? _identityBuilder,
-        assert(icons.length > 1),
-        super(key: key);
+  FluidNavBar({
+    Key? key,
+    required this.icons,
+    this.onChange,
+    this.style,
+    this.animationFactor = 1.0,
+    this.scaleFactor = 1.2,
+    this.defaultIndex = 0,
+    FluidNavBarItemBuilder? itemBuilder,
+  }) : this.itemBuilder = itemBuilder ?? _identityBuilder,
+       assert(icons.length > 1),
+       super(key: key);
 
   @override
   State createState() => _FluidNavBarState();
@@ -122,13 +122,7 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
       height: FluidNavBar.nominalHeight,
       child: Stack(
         children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            width: appSize.width,
-            height: height,
-            child: _buildBackground(),
-          ),
+          Positioned(left: 0, top: 0, width: appSize.width, height: height, child: _buildBackground()),
           Positioned(
             left: (appSize.width - _getButtonContainerWidth()) / 2,
             top: 0,
@@ -168,10 +162,7 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
               () => _handleTap(entry.key),
               entry.value.selectedForegroundColor ?? widget.style?.iconSelectedForegroundColor ?? Colors.black,
               entry.value.unselectedForegroundColor ?? widget.style?.iconUnselectedForegroundColor ?? Colors.grey,
-              entry.value.backgroundColor ??
-                  widget.style?.iconBackgroundColor ??
-                  widget.style?.barBackgroundColor ??
-                  Colors.white,
+              entry.value.backgroundColor ?? widget.style?.iconBackgroundColor ?? widget.style?.barBackgroundColor ?? Colors.white,
               widget.scaleFactor,
               widget.animationFactor,
             ),
@@ -206,14 +197,10 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
     });
 
     _yController.value = 1.0;
-    _xController.animateTo(_indexToPosition(index) / MediaQuery.of(context).size.width,
-        duration: Duration(milliseconds: 620) * widget.animationFactor);
-    Future.delayed(
-      Duration(milliseconds: 500) * widget.animationFactor,
-      () {
-        _yController.animateTo(1.0, duration: Duration(milliseconds: 1200) * widget.animationFactor);
-      },
-    );
+    _xController.animateTo(_indexToPosition(index) / MediaQuery.of(context).size.width, duration: Duration(milliseconds: 620) * widget.animationFactor);
+    Future.delayed(Duration(milliseconds: 500) * widget.animationFactor, () {
+      _yController.animateTo(1.0, duration: Duration(milliseconds: 1200) * widget.animationFactor);
+    });
     _yController.animateTo(0.0, duration: Duration(milliseconds: 300) * widget.animationFactor);
 
     if (widget.onChange != null) {
@@ -241,10 +228,7 @@ class _BackgroundCurvePainter extends CustomPainter {
   final double _normalizedY;
   final Color _color;
 
-  _BackgroundCurvePainter(double x, double normalizedY, Color color)
-      : _x = x,
-        _normalizedY = normalizedY,
-        _color = color;
+  _BackgroundCurvePainter(double x, double normalizedY, Color color) : _x = x, _normalizedY = normalizedY, _color = color;
 
   @override
   void paint(canvas, size) {
@@ -253,15 +237,11 @@ class _BackgroundCurvePainter extends CustomPainter {
 
     final radius = Tween<double>(begin: _radiusTop, end: _radiusBottom).transform(norm);
     // Point colinear to the top edge of the background pane
-    final anchorControlOffset =
-        Tween<double>(begin: radius * _horizontalControlTop, end: radius * _horizontalControlBottom)
-            .transform(LinearPointCurve(0.5, 0.75).transform(norm));
+    final anchorControlOffset = Tween<double>(begin: radius * _horizontalControlTop, end: radius * _horizontalControlBottom).transform(LinearPointCurve(0.5, 0.75).transform(norm));
     // Point that slides up and down depending on distance for the target x position
-    final dipControlOffset = Tween<double>(begin: radius * _pointControlTop, end: radius * _pointControlBottom)
-        .transform(LinearPointCurve(0.5, 0.8).transform(norm));
+    final dipControlOffset = Tween<double>(begin: radius * _pointControlTop, end: radius * _pointControlBottom).transform(LinearPointCurve(0.5, 0.8).transform(norm));
     final y = Tween<double>(begin: _topY, end: _bottomY).transform(LinearPointCurve(0.2, 0.7).transform(norm));
-    final dist =
-        Tween<double>(begin: _topDistance, end: _bottomDistance).transform(LinearPointCurve(0.5, 0.0).transform(norm));
+    final dist = Tween<double>(begin: _topDistance, end: _bottomDistance).transform(LinearPointCurve(0.5, 0.0).transform(norm));
     final x0 = _x - dist / 2;
     final x1 = _x + dist / 2;
 
