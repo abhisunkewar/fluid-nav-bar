@@ -56,6 +56,8 @@ class FluidNavBar extends StatefulWidget {
   /// By default set to 0, meaning that item with index 0 will be selected.
   final int defaultIndex;
 
+  final String? label;
+
   final FluidNavBarItemBuilder itemBuilder;
 
   FluidNavBar({
@@ -66,6 +68,7 @@ class FluidNavBar extends StatefulWidget {
     this.animationFactor = 1.0,
     this.scaleFactor = 1.2,
     this.defaultIndex = 0,
+    this.label,
     FluidNavBarItemBuilder? itemBuilder,
   })  : this.itemBuilder = itemBuilder ?? _identityBuilder,
         assert(icons.length > 1),
@@ -171,6 +174,7 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
               entry.value.backgroundColor ?? widget.style?.iconBackgroundColor ?? widget.style?.barBackgroundColor ?? Colors.white,
               widget.scaleFactor,
               widget.animationFactor,
+              widget.label,
             ),
           ),
         )
