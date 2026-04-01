@@ -48,6 +48,8 @@ class FluidNavBarItem extends StatefulWidget {
   /// The delay factor of the animations ( < 1 is faster, > 1 is slower)
   final double animationFactor;
 
+  final String? label;
+
   FluidNavBarItem(
     this.svgPath,
     this.icon,
@@ -58,11 +60,10 @@ class FluidNavBarItem extends StatefulWidget {
     this.backgroundColor,
     this.scaleFactor,
     this.animationFactor,
+    this.label,
   )   : assert(scaleFactor >= 1.0),
-        assert(svgPath == null || icon == null,
-            'Cannot provide both an iconPath and an icon.'),
-        assert(!(svgPath == null && icon == null),
-            'An iconPath or an icon must be provided.');
+        assert(svgPath == null || icon == null, 'Cannot provide both an iconPath and an icon.'),
+        assert(!(svgPath == null && icon == null), 'An iconPath or an icon must be provided.');
 
   @override
   State createState() {
@@ -70,8 +71,7 @@ class FluidNavBarItem extends StatefulWidget {
   }
 }
 
-class _FluidNavBarItemState extends State<FluidNavBarItem>
-    with SingleTickerProviderStateMixin {
+class _FluidNavBarItemState extends State<FluidNavBarItem> with SingleTickerProviderStateMixin {
   static const double _activeOffset = 16;
   static const double _defaultOffset = 0;
   static const double _iconSize = 25;
@@ -93,23 +93,19 @@ class _FluidNavBarItemState extends State<FluidNavBarItem>
     double waveRatio = 0.28;
     _animationController = AnimationController(
       duration: Duration(milliseconds: (1600 * widget.animationFactor).toInt()),
-      reverseDuration:
-          Duration(milliseconds: (1000 * widget.animationFactor).toInt()),
+      reverseDuration: Duration(milliseconds: (1000 * widget.animationFactor).toInt()),
       vsync: this,
     )..addListener(() => setState(() {}));
 
-    _activeColorClipAnimation =
-        Tween<double>(begin: 0.0, end: _iconSize).animate(CurvedAnimation(
+    _activeColorClipAnimation = Tween<double>(begin: 0.0, end: _iconSize).animate(CurvedAnimation(
       parent: _animationController,
       curve: Interval(0.25, 0.38, curve: Curves.easeOut),
       reverseCurve: Interval(0.7, 1.0, curve: Curves.easeInCirc),
     ));
 
-    var _animation = CurvedAnimation(
-        parent: _animationController, curve: LinearPointCurve(waveRatio, 0.0));
+    var _animation = CurvedAnimation(parent: _animationController, curve: LinearPointCurve(waveRatio, 0.0));
 
-    _yOffsetAnimation = Tween<double>(begin: _defaultOffset, end: _activeOffset)
-        .animate(CurvedAnimation(
+    _yOffsetAnimation = Tween<double>(begin: _defaultOffset, end: _activeOffset).animate(CurvedAnimation(
       parent: _animation,
       curve: ElasticOutCurve(0.38),
       reverseCurve: Curves.easeInCirc,
@@ -118,8 +114,7 @@ class _FluidNavBarItemState extends State<FluidNavBarItem>
     var activatingHalfTween = Tween<double>(begin: 1, end: widget.scaleFactor);
     _activatingAnimation = TweenSequence([
       TweenSequenceItem(tween: activatingHalfTween, weight: 50.0),
-      TweenSequenceItem(
-          tween: ReverseTween<double>(activatingHalfTween), weight: 50.0),
+      TweenSequenceItem(tween: ReverseTween<double>(activatingHalfTween), weight: 50.0),
     ]).animate(CurvedAnimation(
       parent: _animation,
       curve: Interval(0.0, 0.3),
@@ -153,8 +148,7 @@ class _FluidNavBarItemState extends State<FluidNavBarItem>
   Widget build(context) {
     const ne = FluidNavBarItem.nominalExtent;
 
-    final scaleAnimation =
-        _selected ? _activatingAnimation : _inactivatingAnimation;
+    final scaleAnimation = _selected ? _activatingAnimation : _inactivatingAnimation;
 
     return GestureDetector(
       onTap: widget.onTap,
@@ -190,8 +184,7 @@ class _FluidNavBarItemState extends State<FluidNavBarItem>
             Container(
               alignment: Alignment.center,
               child: ClipRect(
-                clipper: _SvgPictureClipper(
-                    _activeColorClipAnimation.value * scaleAnimation.value),
+                clipper: _SvgPictureClipper(_activeColorClipAnimation.value * scaleAnimation.value),
                 child: widget.icon == null
                     ? SvgPicture.asset(
                         widget.svgPath!,
@@ -207,6 +200,20 @@ class _FluidNavBarItemState extends State<FluidNavBarItem>
                       ),
               ),
             ),
+            if (widget.label != null)
+              Positioned(
+                bottom: -20,
+                left: 0,
+                right: 0,
+                child: Text(
+                  widget.label!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: widget.selectedForegroundColor.withOpacity(0.8),
+                  ),
+                ),
+              ),
           ]),
         ),
       ),
@@ -232,8 +239,7 @@ class _SvgPictureClipper extends CustomClipper<Rect> {
 
   @override
   Rect getClip(Size size) {
-    return Rect.fromPoints(size.topLeft(Offset.zero),
-        size.topRight(Offset.zero) + Offset(0, height));
+    return Rect.fromPoints(size.topLeft(Offset.zero), size.topRight(Offset.zero) + Offset(0, height));
   }
 
   @override
